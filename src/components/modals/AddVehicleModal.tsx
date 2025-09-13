@@ -2,7 +2,8 @@
 
 import { Modal } from './Modal';
 import { useStore } from '@/lib/store';
-import { depot } from '@/lib/seed';
+
+const depot = { lat: -33.9249, lng: 18.4241 };
 
 export function AddVehicleModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { routes, addVehicle } = useStore();
