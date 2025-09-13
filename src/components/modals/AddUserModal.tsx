@@ -16,12 +16,20 @@ export function AddUserModal({ open, onClose }:{ open:boolean; onClose:()=>void 
   };
 
   return (
+
     <Modal open={open} onClose={onClose} maxWidth="max-w-md sm:max-w-xl">
+
+    <Modal open={open} onClose={onClose} maxWidth="max-w-sm sm:max-w-xl">
+
       <div className="flex items-start justify-between">
         <div className="text-xl sm:text-2xl font-bold">Add User</div>
         <button className="chip badge" onClick={onClose}>Close</button>
       </div>
+
       <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+
+      <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+
         <div><div className="label">Name</div><input id="auName" className="input" placeholder="Anele Nkosi" /></div>
         <div><div className="label">Email</div><input id="auEmail" type="email" className="input" placeholder="anele@fleet.co.za" /></div>
         <div><div className="label">Role</div>
