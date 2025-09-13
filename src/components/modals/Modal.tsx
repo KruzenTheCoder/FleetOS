@@ -19,8 +19,15 @@ export function Modal({
       if (e.key === 'Escape') onClose();
     };
     document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
-  }, [onClose]);
+
+    // Prevent background scrolling when modal is open
+    if (open) document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+    };
+  }, [open, onClose]);
 
   if (!open) return null;
 

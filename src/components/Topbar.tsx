@@ -64,7 +64,7 @@ export function Topbar({ onMenu }: { onMenu?: () => void }) {
           </div>
         </div>
 
-        {/* Right section: status, refresh, alerts, user menu, live-data */}
+        {/* Right section: system status, refresh, alerts, user menu, live-data */}
         <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end mt-2 md:mt-0">
           <span className="chip hidden sm:inline-flex">
             <span className="dot" style={{ background: '#10b981' }}></span>
