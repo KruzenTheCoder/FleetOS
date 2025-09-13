@@ -23,7 +23,7 @@ export default function ShellLayout({ children }: { children: React.ReactNode })
         <header className="sticky top-0 z-30 bg-white/70 backdrop-blur-xl border-b border-slate-200/70">
           <Topbar onMenu={() => setMobileOpen(true)} />
         </header>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-6">
           {children}
         </div>
       </main>
