@@ -34,7 +34,7 @@ export function Topbar({ onMenu }: { onMenu?: () => void }) {
   }, []);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6">
+    <div className="px-4 sm:px-6">
       <div className="flex flex-wrap items-center justify-between gap-3 md:h-16 py-2">
         <div className="flex items-center gap-3 flex-1 min-w-0">
           <button className="md:hidden" onClick={onMenu}>

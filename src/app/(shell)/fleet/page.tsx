@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { FleetTable } from '@/components/tables/FleetTable';
 import { AddVehicleModal } from '@/components/modals/AddVehicleModal';
@@ -8,27 +8,29 @@ import { useStore } from '@/lib/store';
 
 export default function FleetPage() {
   const [open, setOpen] = useState(false);
-  const { vehicles, settings } = useStore();
+  const { vehicles } = useStore();
 
- const exportCSV = () => {
-  const rows = [['ID','Driver','Status','Route','Fuel %','Speed','Odometer','Lat','Lng']];
+  const exportCSV = () => {
+    const rows = [
+      ['ID', 'Driver', 'Status', 'Route', 'Fuel %', 'Speed', 'Odometer', 'Lat', 'Lng'],
+    ];
 
-  vehicles.forEach(v => {
-    rows.push([
-      String(v.id),
-      String(v.driver),
-      String(v.status),
-      String(v.routeId || ''),
-      String(Math.round(v.fuel)),
-      String(Math.round(v.speed)),
-      String(Math.round(v.odo)),
-      String(v.pos.lat.toFixed(5)),
-      String(v.pos.lng.toFixed(5))
-    ]);
-  });
+    vehicles.forEach((v) => {
+      rows.push([
+        String(v.id),
+        String(v.driver),
+        String(v.status),
+        String(v.routeId || ''),
+        String(Math.round(v.fuel)),
+        String(Math.round(v.speed)),
+        String(Math.round(v.odo)),
+        String(v.pos.lat.toFixed(5)),
+        String(v.pos.lng.toFixed(5)),
+      ]);
+    });
 
-  csvDownload('vehicles.csv', rows);
-};
+    csvDownload('vehicles.csv', rows);
+  };
 
 
   return (
@@ -42,7 +44,7 @@ export default function FleetPage() {
       </div>
 
       <div className="glass p-5 w-full overflow-x-auto">
-        <FleetTable className="min-w-[800px]" />
+        <FleetTable className="sm:min-w-[800px]" />
       </div>
 
       <AddVehicleModal open={open} onClose={() => setOpen(false)} />
