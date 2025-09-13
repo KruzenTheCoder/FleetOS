@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { IoCubeOutline } from 'react-icons/io5';
-import { LoadingBars } from '@/components/shared/LoadingBars';
+import { HaloLoader } from '@/components/shared/HaloLoader';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -18,7 +18,12 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand/20 to-indigo-200 p-4 relative overflow-hidden">
+    <div
+      className={
+        'min-h-screen flex items-center justify-center bg-gradient-to-br from-brand/20 ' +
+        'to-indigo-200 p-4 relative overflow-hidden'
+      }
+    >
       {/* background gradient circles */}
       <div className="absolute -top-20 -left-20 w-72 h-72 bg-brand rounded-full opacity-30 blur-3xl"></div>
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-indigo-400 rounded-full opacity-20 blur-3xl"></div>
@@ -46,9 +51,8 @@ export default function LoginPage() {
       </form>
 
       {loading && (
-        <div className="fixed inset-0 flex flex-col items-center justify-center backdrop-blur-md bg-white/30 z-50 animate-fade">
-          <LoadingBars className="w-24 h-24" />
-          <p className="mt-4 text-brand font-semibold">Preparing dashboard...</p>
+        <div className="fixed inset-0 flex items-center justify-center bg-white/40 backdrop-blur-md z-50 animate-fade">
+          <HaloLoader />
         </div>
       )}
 
