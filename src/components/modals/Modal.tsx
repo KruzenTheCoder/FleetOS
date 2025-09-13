@@ -12,13 +12,17 @@ export function Modal({ open, onClose, children, maxWidth = 'max-w-2xl' }:{
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
     document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
-  }, [onClose]);
+    if (open) document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+    };
+  }, [open, onClose]);
 
   if (!open) return null;
   return createPortal(
     <div className="modal-overlay active" onClick={(e)=>{ if (e.currentTarget === e.target) onClose(); }}>
-      <div className={`modal-content w-full mx-4 sm:mx-0 ${maxWidth} p-4 sm:p-6`}>
+      <div className={`modal-content ${maxWidth} w-full mx-4 sm:mx-0 p-4 sm:p-6`}>
         {children}
       </div>
     </div>,

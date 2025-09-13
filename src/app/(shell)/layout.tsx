@@ -19,7 +19,7 @@ export default function ShellLayout({ children }: { children: React.ReactNode })
       {mobileOpen && <div className="fixed inset-0 z-30 bg-black/20 md:hidden" onClick={() => setMobileOpen(false)} />}
 
       {/* Main column */}
-      <main className="flex-1 flex flex-col">
+      <main className="flex-1 flex flex-col overflow-x-hidden">
         <header className="sticky top-0 z-30 bg-white/70 backdrop-blur-xl border-b border-slate-200/70">
           <Topbar onMenu={() => setMobileOpen(true)} />
         </header>

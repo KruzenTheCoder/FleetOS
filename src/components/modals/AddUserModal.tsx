@@ -16,7 +16,7 @@ export function AddUserModal({ open, onClose }:{ open:boolean; onClose:()=>void 
   };
 
   return (
-    <Modal open={open} onClose={onClose} maxWidth="max-w-md sm:max-w-xl">
+    <Modal open={open} onClose={onClose} maxWidth="max-w-sm sm:max-w-lg">
       <div className="flex items-start justify-between">
         <div className="text-xl sm:text-2xl font-bold">Add User</div>
         <button className="chip badge" onClick={onClose}>Close</button>
