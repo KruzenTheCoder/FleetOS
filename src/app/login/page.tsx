@@ -19,7 +19,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand/20 to-indigo-200 p-4 relative overflow-hidden">
-      {/* soft gradient circles for background */}
+      {/* background gradient circles */}
       <div className="absolute -top-20 -left-20 w-72 h-72 bg-brand rounded-full opacity-30 blur-3xl"></div>
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-indigo-400 rounded-full opacity-20 blur-3xl"></div>
 
