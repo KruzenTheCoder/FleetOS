@@ -1,19 +1,25 @@
-﻿import { Sidebar } from '@/components/Sidebar';
+import { Sidebar } from '@/components/Sidebar';
 import { Topbar } from '@/components/Topbar';
 import ClientBootstrap from '@/components/ClientBootstrap';
+import { useState } from 'react';
 
 export default function ShellLayout({ children }: { children: React.ReactNode }) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   return (
     <div className="min-h-screen flex">
-      {/* Sidebar: always visible; sticky full height */}
-      <aside className="flex flex-col w-72 shrink-0 sticky top-0 h-screen p-6 border-r border-slate-200/70 bg-white/80 backdrop-blur-xl">
+      {/* Sidebar */}
+      <aside
+        className={`fixed inset-y-0 left-0 z-40 w-72 p-6 border-r border-slate-200/70 bg-white/80 backdrop-blur-xl flex flex-col transform transition-transform md:sticky md:translate-x-0 md:h-screen md:flex md:shrink-0 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}
+      >
         <Sidebar />
       </aside>
+      {mobileOpen && <div className="fixed inset-0 z-30 bg-black/20 md:hidden" onClick={() => setMobileOpen(false)} />}
 
       {/* Main column */}
-      <main className="flex-1 flex flex-col">
+      <main className="flex-1 flex flex-col md:ml-72">
         <header className="sticky top-0 z-30 bg-white/70 backdrop-blur-xl border-b border-slate-200/70">
-          <Topbar />
+          <Topbar onMenu={() => setMobileOpen(true)} />
         </header>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
           {children}
