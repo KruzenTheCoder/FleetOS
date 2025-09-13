@@ -23,10 +23,10 @@ export default function MaintenancePage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <div className="text-xl font-bold">Maintenance</div>
         <div className="flex items-center gap-2">
-          <button className="chip badge" onClick={()=>setOpen(true)}>Add Work Order</button>
+          <button className="chip badge" onClick={() => setOpen(true)}>Add Work Order</button>
           <button className="chip badge" onClick={exportCSV}>Export CSV</button>
         </div>
       </div>
@@ -37,7 +37,7 @@ export default function MaintenancePage() {
         <div className="glass p-4"><div className="text-slate-500 text-sm">Completed (30d)</div><div className="text-2xl font-bold">{completed}</div></div>
       </div>
 
-      <div className="glass p-5">
+      <div className="glass p-5 w-full overflow-x-auto">
         <div className="font-semibold">Work Orders</div>
         <MaintTable />
       </div>

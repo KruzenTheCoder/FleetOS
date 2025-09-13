@@ -7,7 +7,7 @@ export function MaintTable() {
 
   return (
     <div className="mt-2 max-h-[420px] overflow-auto thin-scroll">
-      <table className="w-full text-sm">
+      <table className="w-full min-w-[600px] text-sm">
         <thead className="text-slate-500 sticky top-0 bg-white/90 backdrop-blur">
           <tr>
             <th className="text-left font-semibold py-2">ID</th>

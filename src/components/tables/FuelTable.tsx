@@ -20,12 +20,17 @@ export function FuelTable() {
   return (
     <>
       <div className="flex items-center justify-between mt-2">
-        <div className="relative">
-          <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search vehicle/station..." className="pl-3 pr-3 py-2 rounded-xl bg-slate-100 focus:bg-white border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand/40 transition w-64" />
+        <div className="relative flex-1 md:flex-none">
+          <input
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            placeholder="Search vehicle/station..."
+            className="pl-3 pr-3 py-2 rounded-xl bg-slate-100 focus:bg-white border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand/40 transition w-full md:w-64"
+          />
         </div>
       </div>
       <div className="mt-2 max-h-[400px] overflow-auto thin-scroll">
-        <table className="w-full text-sm">
+        <table className="w-full min-w-[700px] text-sm">
           <thead className="text-slate-500 sticky top-0 bg-white/90 backdrop-blur">
             <tr>
               <th className="text-left font-semibold py-2">Date</th>

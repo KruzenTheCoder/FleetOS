@@ -33,19 +33,19 @@ export default function FleetPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <div className="text-xl font-bold">Fleet</div>
         <div className="flex items-center gap-2">
           <button onClick={exportCSV} className="chip badge">Export CSV</button>
-          <button onClick={()=>setOpen(true)} className="chip badge">Add Vehicle</button>
+          <button onClick={() => setOpen(true)} className="chip badge">Add Vehicle</button>
         </div>
       </div>
 
       <div className="glass p-5 w-full overflow-x-auto">
-      <FleetTable className="w-full min-w-[800px]" />
+        <FleetTable className="min-w-[800px]" />
       </div>
 
-      <AddVehicleModal open={open} onClose={()=>setOpen(false)} />
+      <AddVehicleModal open={open} onClose={() => setOpen(false)} />
     </div>
   );
 }
