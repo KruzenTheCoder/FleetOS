@@ -36,10 +36,10 @@ const exportCSV = () => {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <div className="text-xl font-bold">Fuel</div>
         <div className="flex items-center gap-2">
-          <button className="chip badge" onClick={()=>setOpen(true)}>Add Transaction</button>
+          <button className="chip badge" onClick={() => setOpen(true)}>Add Transaction</button>
           <button className="chip badge" onClick={exportCSV}>Export CSV</button>
         </div>
       </div>
@@ -50,7 +50,7 @@ const exportCSV = () => {
         <div className="glass p-4"><div className="text-slate-500 text-sm">This Month</div><div className="text-2xl font-bold">{formatCurrency(monthSpend)}</div></div>
       </div>
 
-      <div className="glass p-5">
+      <div className="glass p-5 w-full overflow-auto">
         <div className="flex items-center justify-between">
           <div className="font-semibold">Transactions</div>
         </div>
