@@ -4,10 +4,15 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useStore } from '@/lib/store';
 import { IoCubeOutline, IoCarOutline, IoNavigateOutline, IoFlameOutline, IoConstructOutline, IoPeopleOutline, IoAnalyticsOutline, IoSettingsOutline, IoSpeedometerOutline } from 'react-icons/io5';
+import { useState } from 'react';
+import { AddVehicleModal } from '@/components/modals/AddVehicleModal';
+import { AddUserModal } from '@/components/modals/AddUserModal';
 
 export function Sidebar() {
   const pathname = usePathname();
   const { vehicles } = useStore();
+  const [vehicleOpen, setVehicleOpen] = useState(false);
+  const [userOpen, setUserOpen] = useState(false);
 
   const link = (href:string, label:string, icon:React.ReactNode) => {
     const active = pathname.startsWith(href);
@@ -50,9 +55,22 @@ export function Sidebar() {
           </div>
           <div className="text-sm text-slate-600">{vehicles.length} Vehicles • {online} Online</div>
         </div>
-        <button className="w-full bg-brand text-white font-semibold py-2.5 rounded-xl shadow-soft hover:brightness-95 transition">Add Vehicle</button>
-        <button className="w-full bg-slate-900 text-white font-semibold py-2.5 rounded-xl shadow-soft hover:brightness-95 transition">Add User</button>
+        <button
+          className="w-full bg-brand text-white font-semibold py-2.5 rounded-xl shadow-soft hover:brightness-95 transition"
+          onClick={() => setVehicleOpen(true)}
+        >
+          Add Vehicle
+        </button>
+        <button
+          className="w-full bg-slate-900 text-white font-semibold py-2.5 rounded-xl shadow-soft hover:brightness-95 transition"
+          onClick={() => setUserOpen(true)}
+        >
+          Add User
+        </button>
       </div>
+
+      <AddVehicleModal open={vehicleOpen} onClose={() => setVehicleOpen(false)} />
+      <AddUserModal open={userOpen} onClose={() => setUserOpen(false)} />
     </>
   );
 }
