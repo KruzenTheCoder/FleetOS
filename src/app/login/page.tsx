@@ -1,20 +1,26 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IoCubeOutline } from 'react-icons/io5';
 import { HaloLoader } from '@/components/shared/HaloLoader';
+import { supabase } from '@/lib/supabaseClient';
+import { useSession } from '@supabase/auth-helpers-react';
 
 export default function LoginPage() {
   const router = useRouter();
+  const session = useSession();
   const [loading, setLoading] = useState(false);
 
-  const signIn = (e: React.FormEvent) => {
-    e.preventDefault();
+  useEffect(() => {
+    if (session) {
+      router.replace('/dashboard');
+    }
+  }, [session, router]);
+
+  const signIn = async () => {
     setLoading(true);
-    setTimeout(() => {
-      router.push('/dashboard');
-    }, 1500);
+    await supabase.auth.signInWithOAuth({ provider: 'google' });
   };
 
   return (
@@ -28,10 +34,7 @@ export default function LoginPage() {
       <div className="absolute -top-20 -left-20 w-72 h-72 bg-brand rounded-full opacity-30 blur-3xl"></div>
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-indigo-400 rounded-full opacity-20 blur-3xl"></div>
 
-      <form
-        onSubmit={signIn}
-        className="glass relative z-10 p-8 md:p-10 w-full max-w-sm space-y-6"
-      >
+      <div className="glass relative z-10 p-8 md:p-10 w-full max-w-sm space-y-6">
         <div className="flex flex-col items-center gap-3">
           <div className="grad w-12 h-12 rounded-2xl flex items-center justify-center shadow-soft">
             <IoCubeOutline className="text-brand text-3xl" />
@@ -39,18 +42,15 @@ export default function LoginPage() {
           <h1 className="text-2xl font-bold">FleetOS</h1>
         </div>
 
-        <input type="text" placeholder="Username" className="input" />
-        <input type="password" placeholder="Password" className="input" />
-
         <button
-          type="submit"
+          onClick={signIn}
           className="w-full bg-brand text-white font-semibold py-2.5 rounded-xl shadow-soft hover:brightness-95 transition"
         >
-          Sign In
+          Sign in with Google
         </button>
-      </form>
+      </div>
 
-      {loading && (
+      {(loading || session) && (
         <div className="fixed inset-0 flex items-center justify-center bg-white/40 backdrop-blur-md z-50 animate-fade">
           <HaloLoader />
         </div>

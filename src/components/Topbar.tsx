@@ -10,6 +10,7 @@ import {
   IoMenu,
 } from 'react-icons/io5';
 import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabaseClient';
 
 export function Topbar({ onMenu }: { onMenu?: () => void }) {
   const { setSearch, liveData, setLiveData } = useStore();
@@ -128,10 +129,8 @@ export function Topbar({ onMenu }: { onMenu?: () => void }) {
                   </a>
                   <button
                     className="block w-full text-left px-3 py-1.5 rounded-lg hover:bg-slate-100"
-                    onClick={() => {
-                      if (typeof window !== 'undefined') {
-                        localStorage.removeItem('fleetos_state');
-                      }
+                    onClick={async () => {
+                      await supabase.auth.signOut();
                       router.push('/login');
                     }}
                   >
