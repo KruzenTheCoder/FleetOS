@@ -26,13 +26,13 @@ export function AddVehicleModal({ open, onClose }:{ open:boolean; onClose:()=>vo
   };
 
   return (
-    <Modal open={open} onClose={onClose} maxWidth="max-w-xl">
+    <Modal open={open} onClose={onClose} maxWidth="max-w-sm sm:max-w-xl">
       <div className="flex items-start justify-between">
-        <div className="text-2xl font-bold">Add Vehicle</div>
+        <div className="text-xl sm:text-2xl font-bold">Add Vehicle</div>
         <button className="chip badge" onClick={onClose}>Close</button>
       </div>
 
-      <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+      <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
         <div><div className="label">Vehicle ID</div><input id="avId" className="input" placeholder="TRK-201" /></div>
         <div><div className="label">Driver</div><input id="avDriver" className="input" placeholder="Thandi" /></div>
         <div>
@@ -42,8 +42,18 @@ export function AddVehicleModal({ open, onClose }:{ open:boolean; onClose:()=>vo
             {routes.map(r=> <option key={r.id} value={r.id}>{r.name}</option>)}
           </select>
         </div>
-        <div><div className="label">Fuel (%)</div><input id="avFuel" type="number" className="input" defaultValue={80} min={5} max={100} /></div>
-        <div className="md:col-span-2"><div className="label">Cargo</div><input id="avCargo" className="input" placeholder="FMCG" /></div>
+        <div>
+          <div className="label">Fuel (%)</div>
+          <input
+            id="avFuel"
+            type="number"
+            className="input"
+            defaultValue={80}
+            min={5}
+            max={100}
+          />
+        </div>
+        <div className="sm:col-span-2"><div className="label">Cargo</div><input id="avCargo" className="input" placeholder="FMCG" /></div>
       </div>
 
       <div className="mt-4 flex items-center justify-end gap-2">
