@@ -37,7 +37,7 @@ export default function MaintenancePage() {
         <div className="glass p-4"><div className="text-slate-500 text-sm">Completed (30d)</div><div className="text-2xl font-bold">{completed}</div></div>
       </div>
 
-      <div className="glass p-5 w-full overflow-x-auto">
+      <div className="glass p-5 w-full overflow-auto">
         <div className="font-semibold">Work Orders</div>
         <MaintTable />
       </div>

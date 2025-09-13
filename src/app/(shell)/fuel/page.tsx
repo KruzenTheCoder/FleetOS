@@ -50,7 +50,7 @@ const exportCSV = () => {
         <div className="glass p-4"><div className="text-slate-500 text-sm">This Month</div><div className="text-2xl font-bold">{formatCurrency(monthSpend)}</div></div>
       </div>
 
-      <div className="glass p-5 w-full overflow-x-auto">
+      <div className="glass p-5 w-full overflow-auto">
         <div className="flex items-center justify-between">
           <div className="font-semibold">Transactions</div>
         </div>
