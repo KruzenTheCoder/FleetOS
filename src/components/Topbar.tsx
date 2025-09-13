@@ -34,13 +34,21 @@ export function Topbar({ onMenu }: { onMenu?: () => void }) {
   }, []);
 
   return (
+
+    <div className="px-4 sm:px-6">
+      <div className="flex flex-wrap items-center justify-between gap-3 md:h-16 py-2">
+
     <div className="max-w-7xl mx-auto px-4 sm:px-6">
       <div className="flex flex-wrap items-center justify-between gap-3 md:h-16 py-2">
         {/* Left section: menu + search + range selector */}
+
         <div className="flex items-center gap-3 flex-1 min-w-0">
           <button className="md:hidden" onClick={onMenu}>
             <IoMenu className="text-2xl" />
           </button>
+
+
+
 
           <div className="relative flex-1">
             <IoSearchOutline className="absolute left-3 top-2.5 text-slate-400" />
@@ -53,23 +61,38 @@ export function Topbar({ onMenu }: { onMenu?: () => void }) {
 
           <div className="segmented ml-1 hidden sm:flex">
             {(['7', '30', '365'] as const).map((r) => (
+              <button key={r} onClick={() => setRange(r)} className={r === range ? 'active' : ''}>
+
+
+          <div className="segmented ml-1 hidden sm:flex">
+            {(['7', '30', '365'] as const).map((r) => (
               <button
                 key={r}
                 onClick={() => setRange(r)}
                 className={r === range ? 'active' : ''}
               >
+
                 {r === '365' ? '12m' : r + 'd'}
               </button>
             ))}
           </div>
         </div>
 
+
+
         {/* Right section: status, refresh, alerts, user menu, live-data */}
+
         <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end mt-2 md:mt-0">
           <span className="chip hidden sm:inline-flex">
             <span className="dot" style={{ background: '#10b981' }}></span>
             Systems nominal
           </span>
+
+          <button className="chip hidden sm:flex">
+            <IoRefreshOutline /> Refresh
+          </button>
+          <div className="flex items-center gap-3 relative">
+
 
           <button className="chip hidden sm:flex" onClick={() => window.location.reload()}>
             <IoRefreshOutline /> Refresh
@@ -77,12 +100,23 @@ export function Topbar({ onMenu }: { onMenu?: () => void }) {
 
           <div className="flex items-center gap-3 relative">
             {/* Alerts dropdown */}
+
             <button
               className="relative"
               ref={alertsRef}
               onClick={() => setAlertsOpen((o) => !o)}
             >
               <IoNotificationsOutline className="text-2xl text-slate-700" />
+
+              <span className="absolute -top-1 -right-1 bg-brand text-white text-[10px] rounded-full px-1.5 py-0.5">2</span>
+              {alertsOpen && (
+                <div className="absolute right-0 top-full mt-2 w-56 glass p-2 shadow-soft z-50">
+                  <div className="px-3 py-1.5 text-sm rounded-lg hover:bg-slate-100">Engine fault reported on TRK-104</div>
+                  <div className="px-3 py-1.5 text-sm rounded-lg hover:bg-slate-100">Service due for TRK-201 in 3 days</div>
+                </div>
+              )}
+            </button>
+
               <span className="absolute -top-1 -right-1 bg-brand text-white text-[10px] rounded-full px-1.5 py-0.5">
                 2
               </span>
@@ -99,6 +133,7 @@ export function Topbar({ onMenu }: { onMenu?: () => void }) {
             </button>
 
             {/* User menu */}
+
             <div
               className="flex items-center gap-2 cursor-pointer relative"
               ref={menuRef}
@@ -114,6 +149,14 @@ export function Topbar({ onMenu }: { onMenu?: () => void }) {
 
               {menuOpen && (
                 <div className="absolute right-0 top-full mt-2 w-48 glass p-2 shadow-soft z-50">
+                  <a className="block px-3 py-1.5 rounded-lg hover:bg-slate-100" href="#">
+                    Profile
+                  </a>
+                  <a className="block px-3 py-1.5 rounded-lg hover:bg-slate-100" href="#">
+
+
+              {menuOpen && (
+                <div className="absolute right-0 top-full mt-2 w-48 glass p-2 shadow-soft z-50">
                   <a
                     className="block px-3 py-1.5 rounded-lg hover:bg-slate-100"
                     href="#"
@@ -124,6 +167,7 @@ export function Topbar({ onMenu }: { onMenu?: () => void }) {
                     className="block px-3 py-1.5 rounded-lg hover:bg-slate-100"
                     href="#"
                   >
+
                     Settings
                   </a>
                   <button
