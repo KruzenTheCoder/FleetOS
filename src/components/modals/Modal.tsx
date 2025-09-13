@@ -1,6 +1,7 @@
 ﻿'use client';
 
 import { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 
 export function Modal({ open, onClose, children, maxWidth = 'max-w-2xl' }:{
   open: boolean;
@@ -15,11 +16,12 @@ export function Modal({ open, onClose, children, maxWidth = 'max-w-2xl' }:{
   }, [onClose]);
 
   if (!open) return null;
-  return (
+  return createPortal(
     <div className="modal-overlay active" onClick={(e)=>{ if (e.currentTarget === e.target) onClose(); }}>
       <div className={`modal-content w-full ${maxWidth} p-6`}>
         {children}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
