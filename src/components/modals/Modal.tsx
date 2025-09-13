@@ -18,7 +18,11 @@ export function Modal({ open, onClose, children, maxWidth = 'max-w-2xl' }:{
   if (!open) return null;
   return createPortal(
     <div className="modal-overlay active" onClick={(e)=>{ if (e.currentTarget === e.target) onClose(); }}>
+
+      <div className={`modal-content w-full mx-4 sm:mx-0 ${maxWidth} p-4 sm:p-6`}>
+
       <div className={`modal-content w-full ${maxWidth} p-4 sm:p-6`}>
+
         {children}
       </div>
     </div>,
