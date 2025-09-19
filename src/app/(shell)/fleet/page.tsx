@@ -1,35 +1,62 @@
-﻿'use client';
+"use client";
 
-import { FleetTable } from '@/components/tables/FleetTable';
-import { AddVehicleModal } from '@/components/modals/AddVehicleModal';
-import { useState } from 'react';
-import { csvDownload } from '@/lib/utils';
-import { useStore } from '@/lib/store';
+import { useCallback, useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { FleetTable } from "@/components/tables/FleetTable";
+import { AddVehicleModal } from "@/components/modals/AddVehicleModal";
+import { csvDownload } from "@/lib/utils";
+import { useStore } from "@/lib/store";
 
 export default function FleetPage() {
   const [open, setOpen] = useState(false);
-  const { vehicles, settings } = useStore();
+  const router = useRouter();
+  const pathname = usePathname();
+  const { vehicles } = useStore();
 
- const exportCSV = () => {
-  const rows = [['ID','Driver','Status','Route','Fuel %','Speed','Odometer','Lat','Lng']];
+  const exportCSV = useCallback(() => {
+    const rows = [["ID", "Driver", "Status", "Route", "Fuel %", "Speed", "Odometer", "Lat", "Lng"]];
 
-  vehicles.forEach(v => {
-    rows.push([
-      String(v.id),
-      String(v.driver),
-      String(v.status),
-      String(v.routeId || ''),
-      String(Math.round(v.fuel)),
-      String(Math.round(v.speed)),
-      String(Math.round(v.odo)),
-      String(v.pos.lat.toFixed(5)),
-      String(v.pos.lng.toFixed(5))
-    ]);
-  });
+    vehicles.forEach((vehicle) => {
+      rows.push([
+        String(vehicle.id),
+        String(vehicle.driver),
+        String(vehicle.status),
+        String(vehicle.routeId || ""),
+        String(Math.round(vehicle.fuel)),
+        String(Math.round(vehicle.speed)),
+        String(Math.round(vehicle.odo)),
+        String(vehicle.pos.lat.toFixed(5)),
+        String(vehicle.pos.lng.toFixed(5))
+      ]);
+    });
 
-  csvDownload('vehicles.csv', rows);
-};
+    csvDownload("vehicles.csv", rows);
+  }, [vehicles]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("modal") === "addVehicle") {
+      setOpen(true);
+    }
+  }, []);
+
+  const openModal = useCallback(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    params.set("modal", "addVehicle");
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    setOpen(true);
+  }, [pathname, router]);
+
+  const closeModal = useCallback(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    params.delete("modal");
+    const query = params.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+    setOpen(false);
+  }, [pathname, router]);
 
   return (
     <div className="space-y-4">
@@ -37,15 +64,15 @@ export default function FleetPage() {
         <div className="text-xl font-bold">Fleet</div>
         <div className="flex items-center gap-2">
           <button onClick={exportCSV} className="chip badge">Export CSV</button>
-          <button onClick={()=>setOpen(true)} className="chip badge">Add Vehicle</button>
+          <button onClick={openModal} className="chip badge">Add Vehicle</button>
         </div>
       </div>
 
       <div className="glass p-5 w-full overflow-x-auto">
-      <FleetTable className="w-full min-w-[800px]" />
+        <FleetTable className="w-full min-w-[800px]" />
       </div>
 
-      <AddVehicleModal open={open} onClose={()=>setOpen(false)} />
+      <AddVehicleModal open={open} onClose={closeModal} />
     </div>
   );
 }

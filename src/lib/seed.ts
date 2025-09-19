@@ -1,4 +1,4 @@
-﻿import type { Vehicle, Route, Settings, FuelTxn, WorkOrder, User } from './types';
+import type { Vehicle, Route, Settings, FuelTxn, WorkOrder, User } from './types';
 import { makeRoutePath } from './utils';
 
 
@@ -34,27 +34,31 @@ export function seedUsers(): User[] {
   ];
 }
 
-export function seedVehicles(): Vehicle[] {
-  const rs = seedRoutes();
-  const routeA = rs[0].points;
-  const routeB = rs[1].points;
-  const routeC = rs[2].points;
+export function seedVehicles(routes?: Route[]): Vehicle[] {
+  const rs = routes ?? seedRoutes();
+  const byId = Object.fromEntries(rs.map(route => [route.id, route.points])) as Record<string, Route['points']>;
+  const fallback = depot;
+  const getPoint = (routeId: string, index: number) => {
+    const points = byId[routeId];
+    if (!points || points.length === 0) return fallback;
+    return points[Math.min(index, points.length - 1)];
+  };
+
   return [
-    { id:'TRK-101', driver:'Ava', status:'En Route', fuel:72, speed:52, odo:148203, pos:routeA[0], routeId:'A', i:0, cargo:'Consumer goods' },
+    { id:'TRK-101', driver:'Ava', status:'En Route', fuel:72, speed:52, odo:148203, pos:getPoint('A', 0), routeId:'A', i:0, cargo:'Consumer goods' },
     { id:'TRK-102', driver:'Noah', status:'Idle', fuel:64, speed:0, odo:122431, pos:{lat:-33.91, lng:18.41}, cargo:'N/A' },
-    { id:'TRK-103', driver:'Liam', status:'En Route', fuel:58, speed:48, odo:201883, pos:routeB[10], routeId:'B', i:10, cargo:'Food & Bev' },
+    { id:'TRK-103', driver:'Liam', status:'En Route', fuel:58, speed:48, odo:201883, pos:getPoint('B', 10), routeId:'B', i:10, cargo:'Food & Bev' },
     { id:'TRK-104', driver:'Emma', status:'En Route', fuel:80, speed:55, odo:175000, pos:{lat:-26.21, lng:28.05}, routeId:'A', i:5, cargo:'Electronics' },
     { id:'TRK-105', driver:'Lucas', status:'Idle', fuel:44, speed:0, odo:99021, pos:{lat:-29.86, lng:31.02}, cargo:'N/A' },
     { id:'TRK-106', driver:'Mia', status:'At Depot', fuel:95, speed:0, odo:50231, pos:depot, cargo:'N/A' },
     { id:'TRK-107', driver:'Ethan', status:'Maintenance', fuel:33, speed:0, odo:220441, pos:{lat:-33.96, lng:25.61}, cargo:'N/A' },
-    { id:'TRK-108', driver:'Olivia', status:'En Route', fuel:69, speed:60, odo:188775, pos:routeC[30], routeId:'C', i:30, cargo:'Pharma' },
+    { id:'TRK-108', driver:'Olivia', status:'En Route', fuel:69, speed:60, odo:188775, pos:getPoint('C', 30), routeId:'C', i:30, cargo:'Pharma' },
     { id:'TRK-109', driver:'Jack', status:'Idle', fuel:51, speed:0, odo:136552, pos:{lat:-25.75, lng:28.23}, cargo:'N/A' },
     { id:'TRK-110', driver:'Sophia', status:'At Depot', fuel:88, speed:0, odo:18233, pos:{lat:-29.09, lng:26.16}, cargo:'N/A' },
     { id:'TRK-111', driver:'Mason', status:'Maintenance', fuel:22, speed:0, odo:240103, pos:{lat:-33.02, lng:27.91}, cargo:'N/A' },
     { id:'TRK-112', driver:'Isabella', status:'En Route', fuel:61, speed:49, odo:165821, pos:{lat:-25.47, lng:30.98}, routeId:'B', i:3, cargo:'Retail' },
   ];
 }
-
 export function seedFuel(): FuelTxn[] {
   return [
     { id:'F001', dt:new Date().toISOString(), vehicle:'TRK-101', liters:42, price:24.5, total:1029, station:'BP Cape Town', odo:148240 },

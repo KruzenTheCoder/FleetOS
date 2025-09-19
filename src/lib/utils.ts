@@ -1,4 +1,4 @@
-﻿import type { LatLng } from './types';
+import type { LatLng } from './types';
 
 export const COLORS = {
   'En Route': '#0A84FF',
@@ -61,11 +61,20 @@ export function csvDownload(filename: string, rows: (string | number)[][]) {
 }
 
 export function formatCurrency(amount: number, currency = 'ZAR') {
-  try {
-    return (amount || 0).toLocaleString('en-ZA', { style: 'currency', currency, maximumFractionDigits: 0 });
-  } catch {
-    return `R ${Math.round(amount || 0).toLocaleString('en-ZA')}`;
-  }
+  const value = Number.isFinite(amount) ? amount : 0;
+  const currencySymbols: Record<string, string> = {
+    ZAR: 'R',
+    USD: '$',
+    EUR: '\u20AC',
+    GBP: '\u00A3',
+  };
+  const symbol = currencySymbols[currency] ?? currency;
+  const formatter = new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+    useGrouping: true,
+  });
+  return `${symbol} ${formatter.format(value)}`;
 }
 
 export const kmToMi = (km: number) => km * 0.621371;

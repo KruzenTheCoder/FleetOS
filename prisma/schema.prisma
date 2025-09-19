@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Route {
+  id         String     @id
+  name       String
+  color      String
+  points     String
+  waypoints  String?
+  vehicles   Vehicle[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+model Vehicle {
+  id           String    @id
+  driver       String
+  status       String
+  fuel         Float
+  speed        Float
+  odo          Float
+  cargo        String?
+  posLat       Float
+  posLng       Float
+  indexOnRoute Int?
+  routeId      String?
+  route        Route?    @relation(fields: [routeId], references: [id])
+  fuelTxns     FuelTxn[]
+  workOrders   WorkOrder[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model FuelTxn {
+  id        String   @id
+  dt        DateTime
+  liters    Float
+  price     Float
+  total     Float?
+  station   String?
+  odo       Float?
+  vehicleId String
+  vehicle   Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model WorkOrder {
+  id        String   @id
+  type      String
+  dueDate   DateTime?
+  dueOdo    Float?
+  status    String
+  notes     String?
+  vehicleId String
+  vehicle   Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  role      String
+  email     String   @unique
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Settings {
+  id              Int      @id @default(1)
+  units           String
+  currency        String
+  tz              String
+  liveDataDefault String
+  refreshRate     Int
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}

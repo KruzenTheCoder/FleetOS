@@ -1,17 +1,45 @@
-﻿'use client';
+"use client";
 
-import { UsersTable } from '@/components/tables/UsersTable';
-import { AddUserModal } from '@/components/modals/AddUserModal';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { UsersTable } from "@/components/tables/UsersTable";
+import { AddUserModal } from "@/components/modals/AddUserModal";
 
 export default function UsersPage() {
   const [open, setOpen] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("modal") === "addUser") {
+      setOpen(true);
+    }
+  }, []);
+
+  const openModal = useCallback(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    params.set("modal", "addUser");
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    setOpen(true);
+  }, [pathname, router]);
+
+  const closeModal = useCallback(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    params.delete("modal");
+    const query = params.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
+    setOpen(false);
+  }, [pathname, router]);
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="text-xl font-bold">Users & Roles</div>
-        <button className="chip badge" onClick={()=>setOpen(true)}>Add User</button>
+        <button className="chip badge" onClick={openModal}>Add User</button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -29,7 +57,7 @@ export default function UsersPage() {
         </div>
       </div>
 
-      <AddUserModal open={open} onClose={()=>setOpen(false)} />
+      <AddUserModal open={open} onClose={closeModal} />
     </div>
   );
 }

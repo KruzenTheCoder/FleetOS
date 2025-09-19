@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import dynamic from 'next/dynamic';
 import { KpiCards } from '@/components/kpis/KpiCards';
@@ -18,8 +18,8 @@ export default function Dashboard() {
 
       <KpiCards />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="glass p-5 lg:col-span-2">
+      <div className="grid grid-cols-1 lg:grid-cols-3 lg:auto-rows-fr gap-4">
+        <div className="glass p-5 lg:col-span-2 flex flex-col h-full">
           <div className="flex items-center justify-between">
             <div className="font-semibold">Fuel Spend (R) & Distance</div>
             <div className="text-sm text-slate-500">Last 7 days</div>
@@ -28,7 +28,7 @@ export default function Dashboard() {
             <DashboardLine />
           </div>
         </div>
-        <div className="glass p-5">
+        <div className="glass p-5 flex flex-col h-full">
           <div className="flex items-center justify-between">
             <div className="font-semibold">Fleet Utilization</div>
             {/* Optional: a "Boost +5%" button could update a random vehicle to En Route */}
@@ -68,3 +68,5 @@ export default function Dashboard() {
     </div>
   );
 }
+
+

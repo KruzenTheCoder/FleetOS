@@ -1,11 +1,11 @@
-﻿'use client';
+"use client";
 
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import type { Vehicle, Route, FuelTxn, WorkOrder, Settings, FeedItem, User } from './types';
-import { seedVehicles, seedRoutes, seedUsers, seedFuel, seedMaint, defaultSettings } from './seed';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import type { Vehicle, Route, FuelTxn, WorkOrder, Settings, FeedItem, User } from "./types";
+import { seedVehicles, seedRoutes, seedUsers, seedFuel, seedMaint, defaultSettings } from "./seed";
 
-type State = {
+type BaseState = {
   settings: Settings;
   vehicles: Vehicle[];
   routes: Route[];
@@ -17,8 +17,11 @@ type State = {
   todayFuelSpend: number;
   todayAvgSpeed: number;
   liveData: boolean;
-  statusFilter: 'All' | Vehicle['status'];
+  statusFilter: "All" | Vehicle["status"];
   searchQuery: string;
+  currentUser: User | null;
+  seeded: boolean;
+  isBootstrapped: boolean;
 };
 
 type Actions = {
@@ -37,49 +40,127 @@ type Actions = {
   addRoute: (r: Route) => void;
   removeRoute: (id: string) => void;
   pushFeed: (e: FeedItem) => void;
-  setToday: (p: Partial<Pick<State,'todayKm'|'todayFuelSpend'|'todayAvgSpeed'>>) => void;
+  setToday: (p: Partial<Pick<BaseState, "todayKm" | "todayFuelSpend" | "todayAvgSpeed">>) => void;
   setLiveData: (b: boolean) => void;
-  setFilter: (f: State['statusFilter']) => void;
+  setFilter: (f: BaseState["statusFilter"]) => void;
   setSearch: (q: string) => void;
+  hydrate: (payload: BootstrapPayload) => void;
+  setCurrentUser: (user: User | null) => void;
+  logout: () => void;
 };
 
-export const useStore = create<State & Actions>()(
-  persist(
-    (set, get) => ({
-      settings: defaultSettings,
-      vehicles: seedVehicles(),
-      routes: seedRoutes(),
-      users: seedUsers(),
-      fuelTxns: seedFuel(),
-      maint: seedMaint(),
-      feed: [],
-      todayKm: 2134,
-      todayFuelSpend: 2410,
-      todayAvgSpeed: 52,
-      liveData: defaultSettings.liveDataDefault === 'on',
-      statusFilter: 'All',
-      searchQuery: '',
+type BootstrapPayload = {
+  vehicles?: Vehicle[];
+  routes?: Route[];
+  users?: User[];
+  fuelTxns?: FuelTxn[];
+  maint?: WorkOrder[];
+  settings?: Settings;
+  seeded?: boolean;
+};
 
-      setSettings: (p) => set(s => ({ settings: { ...s.settings, ...p } })),
-      addVehicle: (v) => set(s => ({ vehicles: [...s.vehicles, v] })),
-      updateVehicle: (id, p) => set(s => ({ vehicles: s.vehicles.map(v => v.id===id? {...v, ...p}: v) })),
-      removeVehicle: (id) => set(s => ({ vehicles: s.vehicles.filter(v => v.id!==id) })),
-      addUser: (u) => set(s => ({ users: [...s.users, u] })),
-      removeUser: (email) => set(s => ({ users: s.users.filter(u => u.email !== email) })),
-      addFuel: (t) => set(s => ({ fuelTxns: [...s.fuelTxns, t] })),
-      updateFuel: (id, p) => set(s => ({ fuelTxns: s.fuelTxns.map(t => t.id===id? {...t, ...p}: t) })),
-      removeFuel: (id) => set(s => ({ fuelTxns: s.fuelTxns.filter(t => t.id!==id) })),
-      addMaint: (w) => set(s => ({ maint: [...s.maint, w] })),
-      updateMaint: (id, p) => set(s => ({ maint: s.maint.map(w => w.id===id? {...w, ...p}: w) })),
-      removeMaint: (id) => set(s => ({ maint: s.maint.filter(w => w.id!==id) })),
-      addRoute: (r) => set(s => ({ routes: [...s.routes, r] })),
-      removeRoute: (id) => set(s => ({ routes: s.routes.filter(r => r.id!==id) })),
-      pushFeed: (e) => set(s => ({ feed: [e, ...s.feed].slice(0, 80) })),
-      setToday: (p) => set(s => ({ ...s, ...p })),
+const defaultAdmin: User = {
+  name: "Admin User",
+  role: "Administrator",
+  email: "admin@fleetos.local",
+};
+
+function createInitialState(): BaseState {
+  const routes = seedRoutes();
+  const vehicles = seedVehicles(routes);
+  const users = seedUsers();
+  return {
+    settings: { ...defaultSettings },
+    vehicles,
+    routes,
+    users,
+    fuelTxns: seedFuel(),
+    maint: seedMaint(),
+    feed: [],
+    todayKm: 2134,
+    todayFuelSpend: 2410,
+    todayAvgSpeed: 52,
+    liveData: defaultSettings.liveDataDefault === "on",
+    statusFilter: "All",
+    searchQuery: "",
+    currentUser: users.find((user) => /admin/i.test(user.role)) ?? defaultAdmin,
+    seeded: false,
+    isBootstrapped: false,
+  };
+}
+
+export const useStore = create<BaseState & Actions>()(
+  persist(
+    (set, _get) => ({
+      ...createInitialState(),
+      setSettings: (p) => set((state) => ({ settings: { ...state.settings, ...p } })),
+      addVehicle: (v) => set((state) => ({ vehicles: [...state.vehicles, v] })),
+      updateVehicle: (id, p) =>
+        set((state) => ({
+          vehicles: state.vehicles.map((vehicle) => (vehicle.id === id ? { ...vehicle, ...p } : vehicle)),
+        })),
+      removeVehicle: (id) => set((state) => ({ vehicles: state.vehicles.filter((vehicle) => vehicle.id !== id) })),
+      addUser: (u) => set((state) => ({ users: [...state.users, u] })),
+      removeUser: (email) => set((state) => ({ users: state.users.filter((user) => user.email !== email) })),
+      addFuel: (t) => set((state) => ({ fuelTxns: [...state.fuelTxns, t] })),
+      updateFuel: (id, p) =>
+        set((state) => ({
+          fuelTxns: state.fuelTxns.map((txn) => (txn.id === id ? { ...txn, ...p } : txn)),
+        })),
+      removeFuel: (id) => set((state) => ({ fuelTxns: state.fuelTxns.filter((txn) => txn.id !== id) })),
+      addMaint: (w) => set((state) => ({ maint: [...state.maint, w] })),
+      updateMaint: (id, p) =>
+        set((state) => ({
+          maint: state.maint.map((order) => (order.id === id ? { ...order, ...p } : order)),
+        })),
+      removeMaint: (id) => set((state) => ({ maint: state.maint.filter((order) => order.id !== id) })),
+      addRoute: (r) => set((state) => ({ routes: [...state.routes, r] })),
+      removeRoute: (id) => set((state) => ({ routes: state.routes.filter((route) => route.id !== id) })),
+      pushFeed: (e) => set((state) => ({ feed: [e, ...state.feed].slice(0, 80) })),
+      setToday: (p) => set((state) => ({ ...state, ...p })),
       setLiveData: (b) => set({ liveData: b }),
       setFilter: (f) => set({ statusFilter: f }),
       setSearch: (q) => set({ searchQuery: q }),
+      hydrate: (payload) => {
+        set((state) => {
+          const updates: Partial<BaseState> = {};
+          if (payload.routes) updates.routes = payload.routes;
+          if (payload.vehicles) updates.vehicles = payload.vehicles;
+          if (payload.fuelTxns) updates.fuelTxns = payload.fuelTxns;
+          if (payload.maint) updates.maint = payload.maint;
+          if (payload.settings) {
+            updates.settings = { ...state.settings, ...payload.settings };
+            updates.liveData = payload.settings.liveDataDefault === "on";
+          }
+          if (payload.users) {
+            updates.users = payload.users;
+            if (payload.users.length === 0) {
+              updates.currentUser = null;
+            } else if (!state.currentUser || !payload.users.some((user) => user.email === state.currentUser?.email)) {
+              updates.currentUser =
+                payload.users.find((user) => /admin/i.test(user.role)) ?? payload.users[0];
+            }
+          }
+          if (payload.seeded !== undefined) {
+            updates.seeded = payload.seeded;
+          }
+          updates.isBootstrapped = true;
+          return { ...state, ...updates };
+        });
+      },
+      setCurrentUser: (user) => set({ currentUser: user }),
+      logout: () => {
+        const base = createInitialState();
+        set((state) => ({
+          ...state,
+          ...base,
+          currentUser: null,
+        }));
+      },
     }),
-    { name: 'fleetos_state' }
-  )
+    {
+      name: "fleetos_state",
+      version: 2,
+    },
+  ),
 );
